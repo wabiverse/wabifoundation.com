@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wabi Foundation — Akari, a realtime OpenUSD engine</title>
+<meta name="description" content="USD at the speed of light. A realtime OpenUSD engine with the full PBR stack, free and open source, on macOS and iOS.">
+<link rel="icon" href="assets/img/favicon-64.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="canonical" href="https://wabifoundation.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Akari — a realtime OpenUSD engine">
+<meta property="og:description" content="USD at the speed of light. A realtime OpenUSD engine, free and open source.">
+<meta property="og:url" content="https://wabifoundation.com/">
+<meta property="og:image" content="https://wabifoundation.com/assets/img/akari-icon.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#08080b">
+<link rel="stylesheet" href="assets/css/site.css">
+<script>
+  try { var t = localStorage.getItem("wabi-theme"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+</script>
+<noscript><style>.rv{opacity:1;transform:none}</style></noscript>
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="grid-veil" aria-hidden="true"></div>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Wabi Foundation">
+      <svg class="orca" viewBox="0.17 0.19 32.95 49.61" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="m4.87,33.98S1.37,31.13.3,24.1c-.31-2.73.01-5.38,1.02-7.94,1.15-2.93,2.99-5.33,5.51-7.22.5-.38,1.05-.69,1.46-1.18.6-.71.79-1.52.68-2.42-.09-.68-.33-1.3-.59-1.92-.16-.39-.34-.77-.39-1.19-.1-.79.33-1.48,1.07-1.77.78-.31,1.59-.3,2.4-.17,1.26.21,2.48.59,3.67,1.04,2.19.81,4.27,1.85,6.25,3.09,2.3,1.44,4.41,3.11,6.27,5.1,1.34,1.44,2.51,3,3.44,4.73,1.81,3.37,2.41,6.95,1.76,10.73-.23,1.32-.62,2.58-1.3,3.74-1.22,2.09-3.05,3.12-5.46,3.16-1.32.02-2.55-.3-3.75-.81-1.13-.48-2.21-1.05-3.26-1.67-1.17-.69-9.85-6.99-12.05-7.47-1.8.32-3.36.8-4.12,2.47-3.46,3.39,1.97,9.55,1.97,9.55h0Zm17.95-8.31c0-.82-.98-1.62-1.82-1.49-.66.11-.99.67-.76,1.3.23.63.88,1.1,1.55,1.11.59.01,1.03-.38,1.03-.92h0Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="m21.49,33.4c.27-.15-7.4,8.63-16.65.59-2.3-2-6.77-12.09.52-12.29,4.64-.13,11.83,6.48,11.83,6.48-2.9-1.96-8.72-5.94-12.24-2.8-4.78,4.27,2.44,15.66,16.53,8.02h0Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="m14.91,35.81c1.07-.31,2.07-.81,3.09-1.24,1.07-.46,2.15-.9,3.3-1.14.71-.15,1.49-.14,1.99.01-.56.82-1.03,1.68-1.56,2.52-.21.34-.46.66-.73.95-1.19,1.26-2.65,1.79-4.28,1.81-.41,0-.83,0-1.32,0,.73.15,1.38.31,2.01.55,1.59.6,2.53,1.76,2.92,3.38.42,1.77.69,3.57,1.15,5.34.14.55.27,1.1.46,1.63.05.13.05.18-.12.16-1.76-.24-3.47-.66-5.02-1.56-1.39-.8-2.48-1.92-3.33-3.28-.8-1.27-1.36-2.65-1.97-4.01-.32-.71-.53-1.29-.95-1.92-.45-.68-1.06-1.25-1.75-1.7-2.84-1.82-4.47-3.89-4.52-3.94,0,0,2.96,3.58,8.5,3.04.73-.15,1.46-.3,2.15-.6h0Z" fill="currentColor" stroke-width="0"/><path fill-rule="evenodd" clip-rule="evenodd" opacity=".4" d="m22.82,25.67c0,.54-.44.93-1.03.92-.67-.01-1.32-.48-1.55-1.11s.1-1.19.76-1.3c.84-.14,1.83.67,1.82,1.49h0Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" opacity=".28" d="m30.62,9.58s-.06-.02-.06-.06v-1.16s.02-.06.06-.06h.6c.27,0,.35.12.35.3v.08c0,.1-.03.17-.1.2.13.01.22.11.22.26v.38s-.02.06-.06.06h-.28s-.06-.02-.06-.06v-.27c0-.05-.02-.08-.07-.08h-.25v.35s-.02.06-.06.06h-.28Zm.34-.74h.13c.06,0,.08-.04.08-.08v-.06s-.02-.08-.08-.08h-.13v.23Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" opacity=".28" d="m31.12,10.36c-.78,0-1.42-.64-1.42-1.42s.64-1.42,1.42-1.42,1.42.64,1.42,1.42-.64,1.42-1.42,1.42Zm0-2.51c-.6,0-1.09.49-1.09,1.09s.49,1.09,1.09,1.09,1.09-.49,1.09-1.09-.49-1.09-1.09-1.09Z" fill="currentColor"/></svg>
+    </a>
+    <nav class="main">
+      <a href="akari.html">Rendering</a>
+      <a href="kraken.html">Workspace</a>
+      <a href="#quickstart">Quickstart</a>
+      <a href="credits.html">Credits</a>
+      <a href="https://github.com/wabiverse/Akari">GitHub</a>
+    </nav>
+    <button class="icon-btn" data-theme-toggle aria-label="Toggle color theme">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+
+<!-- ───────────────────────── hero ───────────────────────── -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow rv in"><span class="dot"></span> v0.0.7 · macOS build available</span>
+      <h1 class="rv in">
+        A realtime<br>
+        <span class="grad-text">OpenUSD</span> engine.
+      </h1>
+      <p class="lede rv" data-delay="0.08">
+        USD at the speed of light.
+      </p>
+      <div class="hero-actions rv" data-delay="0.16">
+        <a class="btn primary" href="https://github.com/wabiverse/Akari/releases/latest">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></svg>
+          Download
+        </a>
+        <a class="btn" href="https://vimeo.com/1241690263?fl=pl&amp;fe=sh">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 7.5v9l7.5-4.5z"/><rect x="3" y="4" width="18" height="16" rx="3"/></svg>
+          Watch the reel
+        </a>
+        <a class="btn" href="#quickstart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg>
+          Build from source
+        </a>
+      </div>
+      <p class="hero-note rv" data-delay="0.22">Free. Open source. Nothing to sign up for.</p>
+    </div>
+
+    <div class="viewport rv" data-delay="0.1">
+      <canvas data-viewport aria-hidden="true"></canvas>
+      <div class="scanline" aria-hidden="true"></div>
+      <div class="hud" aria-hidden="true">
+        <div><b>akari</b> · hydra delegate</div>
+        <div>stage &nbsp;/World/Geo</div>
+        <div>agx · taa · ssr · ssgi</div>
+      </div>
+      <div class="hud-r" aria-hidden="true">
+        <div><span class="fps" data-fps>60</span> fps</div>
+        <div>linear · rec.709</div>
+      </div>
+      <span class="corner tl" aria-hidden="true"></span>
+      <span class="corner bl" aria-hidden="true"></span>
+      <span class="corner br" aria-hidden="true"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── marquee ───────────────────────── -->
+<div class="strip" aria-hidden="true">
+  <div class="track">
+    <span>Forward+ PBR</span><span>Image based lighting</span><span>Irradiance volumes</span><span>Cascaded shadows</span><span>Screen space reflections</span><span>Horizon scan GI</span><span>Temporal AA</span><span>Froxel volumetrics</span><span>Contact shadows</span><span>AgX</span><span>Motion blur</span><span>Hydra</span>
+    <span>Forward+ PBR</span><span>Image based lighting</span><span>Irradiance volumes</span><span>Cascaded shadows</span><span>Screen space reflections</span><span>Horizon scan GI</span><span>Temporal AA</span><span>Froxel volumetrics</span><span>Contact shadows</span><span>AgX</span><span>Motion blur</span><span>Hydra</span>
+  </div>
+</div>
+
+<!-- ───────────────────────── stats ───────────────────────── -->
+<section class="tight">
+  <div class="wrap">
+    <div class="stats rv">
+      <div>
+        <div class="n"><span data-count="25" data-prefix="~">~25</span> fps</div>
+        <div class="l">Moana Island, M5 Air</div>
+      </div>
+      <div>
+        <div class="n"><span data-count="11">11</span></div>
+        <div class="l">Realtime features</div>
+      </div>
+      <div>
+        <div class="n"><span data-count="6">6</span></div>
+        <div class="l">Target platforms</div>
+      </div>
+      <div>
+        <div class="n">BSD-3</div>
+        <div class="l">Free &amp; open source</div>
+      </div>
+    </div>
+    <p class="hero-note rv" style="margin-top:16px">
+      That&rsquo;s the Moana Island Scene. On the cheapest laptop Apple sells. With a fan that isn&rsquo;t there.
+    </p>
+  </div>
+</section>
+
+<!-- ───────────────────────── what you get ───────────────────────── -->
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="kicker">The app</div>
+      <h2>There&rsquo;s no preview mode.</h2>
+      <p>
+        Because there&rsquo;s nothing to preview. Viewport, outliner, properties, asset browser, modifier
+        stack, sculpting, dope sheet, timeline — one stage, and all of it already rendered.
+      </p>
+    </div>
+
+    <div class="cards c3">
+      <div class="card rv">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg></div>
+        <h3>What you see is the shot</h3>
+        <p>Orbit it, scrub it, retune a shader at 2am. The image keeps up with you, not the other way around.</p>
+      </div>
+      <div class="card rv" data-delay="0.04">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></div>
+        <h3>Your files stay your files</h3>
+        <p>Opens the USD you have. Writes USD back. No import, no export, no proprietary blob in the middle.</p>
+      </div>
+      <div class="card rv" data-delay="0.08">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18.5h2"/></svg></div>
+        <h3>Also runs in your hands</h3>
+        <p>The same app on a Mac and an iPad. Gizmos and pie menus built for fingers, not bolted onto a mouse.</p>
+      </div>
+      <div class="card rv">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="7" cy="17" r="2"/></svg></div>
+        <h3>Nothing is baked</h3>
+        <p>A modifier stack on the GPU. Reorder it, mute it, change your mind entirely. The mesh underneath never flinches.</p>
+      </div>
+      <div class="card rv" data-delay="0.04">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16"/><circle cx="9" cy="10" r="1.3" fill="currentColor"/></svg></div>
+        <h3>Sculpt where it stands</h3>
+        <p>No default sphere. No separate document. Select a mesh and push it around in the scene it belongs to.</p>
+      </div>
+      <div class="card rv" data-delay="0.08">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></svg></div>
+        <h3>Free, as in actually free</h3>
+        <p>No account. No license server. No telemetry. No asterisk anywhere on this page. BSD 3-Clause.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── pipeline ───────────────────────── -->
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="kicker">Frame graph</div>
+      <h2>Eight passes, sixty times a second.</h2>
+      <p>
+        The graph gets rebuilt every tick, and the stage only pays for what it actually asked for.
+        Switch a pass off and that time goes somewhere more useful.
+      </p>
+    </div>
+
+    <div class="pipeline rv" data-pipeline>
+      <div class="stage" data-note="Visibility, instance culling and a depth prepass over the Hydra scene index."><span class="num">01</span>Cull &amp; depth</div>
+      <div class="stage" data-note="Cascaded sun shadows, plus shadow maps for punctual and area lights."><span class="num">02</span>Shadows</div>
+      <div class="stage" data-note="Forward+ PBR shading, image based lighting and baked irradiance volumes."><span class="num">03</span>Shade</div>
+      <div class="stage" data-note="Screen space reflections and horizon scan GI, for what the probes do not cover."><span class="num">04</span>Screen space</div>
+      <div class="stage" data-note="Froxel participating media, fog and light shafts, accumulated through the view."><span class="num">05</span>Volumetrics</div>
+      <div class="stage" data-note="Temporal reprojection. It also stabilizes the screen space passes."><span class="num">06</span>TAA</div>
+      <div class="stage" data-note="Camera motion blur over the shutter interval, depth of field, bloom."><span class="num">07</span>Post</div>
+      <div class="stage" data-note="AgX by default. ACES, Filmic and Khronos PBR Neutral are also available."><span class="num">08</span>Tonemap</div>
+    </div>
+    <div class="pipe-caption rv" data-pipe-caption></div>
+  </div>
+</section>
+
+<!-- ───────────────────────── features ───────────────────────── -->
+<section>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="kicker">Features</div>
+      <h2>The whole realtime stack.</h2>
+      <p>
+        No path tracing, no ray tracing, no waiting. Screen space everything, which is the only way
+        the image keeps arriving while your hand is still on the mouse.
+      </p>
+    </div>
+
+    <div class="cards c3">
+      <div class="card rv">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18"/><path d="M3 12h18"/></svg></div>
+        <h3>Image based lighting</h3>
+        <p>Prefiltered specular, irradiance and a BRDF LUT off the dome light. Drop a scene in and it already sits in a room.</p>
+      </div>
+      <div class="card rv" data-delay="0.04">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/><path d="M11 7h4a2 2 0 0 1 2 2v4"/></svg></div>
+        <h3>Light probes</h3>
+        <p>Baked and streamed probes with irradiance volumes, for indirect diffuse in interiors that screen space cannot see.</p>
+      </div>
+      <div class="card rv" data-delay="0.08">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="5"/><path d="M14 14c3 1.5 5 3.5 6 6H4c1-3.5 3.5-5.5 7-6.3"/></svg></div>
+        <h3>Soft &amp; contact shadows</h3>
+        <p>Cascades for the sun, shadow maps for punctual and area lights, and contact shadows.</p>
+      </div>
+      <div class="card rv">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10h16M4 10l3-5h10l3 5"/><path d="M6 10v4c0 3 2.5 5 6 5s6-2 6-5v-4"/></svg></div>
+        <h3>Screen space reflections</h3>
+        <p>Full resolution, and where a ray walks off the edge of the frame the probes and the dome pick it up.</p>
+      </div>
+      <div class="card rv" data-delay="0.04">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></div>
+        <h3>Screen space GI</h3>
+        <p>Horizon scan global illumination, plus GTAO for contact darkening.</p>
+      </div>
+      <div class="card rv" data-delay="0.08">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17c3 0 3-4 6-4s3 4 6 4 3-4 6-4"/><path d="M3 10c3 0 3-4 6-4s3 4 6 4 3-4 6-4"/></svg></div>
+        <h3>Volumetrics</h3>
+        <p>Froxel based participating media for fog, haze, clouds and light shafts, marched in view space.</p>
+      </div>
+      <div class="card rv" data-delay="0.04">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg></div>
+        <h3>Temporal AA</h3>
+        <p>Reprojection to resolve edges. It also stabilizes the screen space passes behind it.</p>
+      </div>
+      <div class="card rv" data-delay="0.08">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18c4-9 12-9 16 0"/><circle cx="12" cy="9" r="2.5"/></svg></div>
+        <h3>Motion blur &amp; DoF</h3>
+        <p>Camera motion blur across <code>shutter:open</code> and <code>shutter:close</code>. Depth of field comes from the USD camera.</p>
+      </div>
+      <div class="card rv">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V8M10 20V4M16 20v-7M22 20h-20"/></svg></div>
+        <h3>Dynamic resolution</h3>
+        <p>Render scale tracks the GPU. It changes only after a sustained budget miss, with hysteresis and a cooldown, so it doesn&rsquo;t bounce while you orbit.</p>
+      </div>
+      <div class="card rv" data-delay="0.04">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 12l7-4"/></svg></div>
+        <h3>AgX color pipeline</h3>
+        <p>AgX is the default view transform. ACES, Filmic and Khronos PBR Neutral are one setting away.</p>
+      </div>
+      <div class="card rv" data-delay="0.08">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l2.4 5.5L20 9l-4 4 1 6-5-2.8L7 19l1-6-4-4 5.6-1.5z"/></svg></div>
+        <h3>Bloom</h3>
+        <p>Energy conserving, and applied before the view transform, so bright things glow instead of going chalky.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── platforms + countdown ───────────────────────── -->
+<section id="platforms">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="kicker">Platforms</div>
+      <h2>Six platforms, one frame graph.</h2>
+      <p>
+        Metal on Apple silicon today. Linux, Windows and Android run on OpenGL now, with Vulkan
+        landing in the graphics layer underneath.
+      </p>
+    </div>
+
+    <div class="plats rv">
+      <div class="plat">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <h4>macOS</h4>
+        <div class="api">Metal · Apple silicon</div>
+        <span class="pill ready">Available</span>
+      </div>
+      <div class="plat">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18.5h2"/></svg></div>
+        <h4>iOS &amp; iPadOS</h4>
+        <div class="api">Metal · touch native</div>
+        <span class="pill ready">Build &amp; run</span>
+      </div>
+      <div class="plat">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3 4-4 10-4s10 1 10 4-2 6-5 6-3-2-5-2-2 2-5 2-5-3-5-6z"/></svg></div>
+        <h4>visionOS</h4>
+        <div class="api">Metal · immersive</div>
+        <span class="pill ready">Build &amp; run</span>
+      </div>
+      <div class="plat soon">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5.5l8-1.2v7.2H3zM13 4l8-1.2v8.7h-8zM3 12.5h8v7.2l-8-1.2zM13 12.5h8v8.7L13 20z"/></svg></div>
+        <h4>Windows &amp; Linux</h4>
+        <div class="api">OpenGL today · Vulkan next</div>
+        <span class="pill soon">No date yet</span>
+      </div>
+    </div>
+
+    <!--
+      Release countdown for the next macOS and iOS build.
+      Change the target instant below (ISO 8601, UTC) and the clock follows it.
+      When it passes, the clock swaps itself for a "shipped" badge.
+    -->
+    <div class="countdown rv" style="margin-top:28px">
+      <div>
+        <h3>Next release · macOS and iOS</h3>
+        <p>
+          v0.0.7 is the build you can download today. v0.0.8 is finished and sitting here, shipping
+          for Mac, iPad and iPhone at once the moment Apple provisions a profile &mdash; the one pass
+          we can&rsquo;t optimize. Windows and Linux are coming, with no date we&rsquo;re willing to make up.
+        </p>
+      </div>
+      <div class="clock" data-countdown="2026-11-27T00:00:00Z" aria-label="Time until the next release"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── quickstart ───────────────────────── -->
+<section id="quickstart">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="kicker">Quickstart</div>
+      <h2>From nothing to lit.</h2>
+      <p>
+        Take the macOS build, or clone it and run <code>make</code>. Either road ends with your own
+        USD in a live viewport, inside a minute.
+      </p>
+    </div>
+
+    <div class="steps rv" style="margin-bottom:34px">
+      <div class="step">
+        <div class="n">Install</div>
+        <h4>Drag it in</h4>
+        <p>Mount the <code>.dmg</code>, drop the app in. It&rsquo;s self-signed, so macOS will clutch its pearls exactly once: <strong>System Settings → Privacy &amp; Security</strong> → <strong>Open Anyway</strong>.</p>
+      </div>
+      <div class="step">
+        <div class="n">Open</div>
+        <h4>Hand it a scene</h4>
+        <p><strong>File → Open…</strong>, or hand a path to <code>--usd</code>. Binary, ASCII, zipped: <code>.usd</code>, <code>.usda</code>, <code>.usdc</code>, <code>.usdz</code>. It doesn&rsquo;t care which.</p>
+      </div>
+      <div class="step">
+        <div class="n">Render</div>
+        <h4>There&rsquo;s no step three</h4>
+        <p>You&rsquo;re already looking at it. Orbit, scrub, swap a material. Nothing to kick off, nothing to wait on.</p>
+      </div>
+    </div>
+
+    <div class="cards c2">
+      <div class="code rv">
+        <div class="bar"><span class="dots"><i></i><i></i><i></i></span> build &amp; run from source</div>
+        <button class="copy" data-copy="#src-code">copy</button>
+        <pre id="src-code"><span class="c-cmt"># clone, then let the Makefile fetch swift-bundler</span>
+git clone https://github.com/wabiverse/Akari.git
+cd Akari
+
+<span class="c-cmt"># build Kraken and open one of the bundled scenes</span>
+make run <span class="c-arg">USD_SCENE</span>=Scenes/LensShowcase.usda</pre>
+      </div>
+
+      <div class="code rv" data-delay="0.06">
+        <div class="bar"><span class="dots"><i></i><i></i><i></i></span> your own scene, and iOS</div>
+        <button class="copy" data-copy="#ios-code">copy</button>
+        <pre id="ios-code"><span class="c-cmt"># any USD stage you already have</span>
+make run <span class="c-arg">USD_SCENE</span>=~/scenes/island.usda
+
+<span class="c-cmt"># deploy to a connected iPhone or iPad</span>
+make run <span class="c-arg">PLATFORM</span>=iOS <span class="c-arg">DEVICE_ID</span>=&lt;device&gt; \
+         <span class="c-arg">CODESIGN_IDENTITY</span>=&lt;identity&gt;</pre>
+      </div>
+    </div>
+
+    <div class="callout rv" style="margin-top:22px">
+      On iPhone and iPad it registers as a USD editor, so a scene sitting in the Files app opens
+      straight into the viewport and stays editable where it lies.
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── scenes ───────────────────────── -->
+<section id="scenes">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="kicker">Straight out of the box</div>
+      <h2>Scenes you can render in the next minute.</h2>
+      <p>
+        Real frames, rendered by Akari, graded to match this page. Every one of them ships with the
+        source as plain <code>.usda</code> — render it, then open the file and find the attribute
+        that did that.
+      </p>
+    </div>
+
+    <div class="scenes">
+      <figure class="scene rv wide" data-delay="0.00" style="--h1:320;--h2:255">
+        <div class="thumb">
+          <img src="assets/img/scenes/saber.jpg" width="1200" height="750" loading="lazy" decoding="async"
+               alt="The Saber Showcase scene rendered in Akari">
+        </div>
+        <figcaption class="meta">
+          <h4>Saber Showcase</h4>
+          <p>Emissive geometry, bloom, and scatter doing most of the acting.</p>
+          <code>make run USD_SCENE=Scenes/SaberShowcase.usda</code>
+        </figcaption>
+      </figure>
+      <figure class="scene rv" data-delay="0.04" style="--h1:205;--h2:262">
+        <div class="thumb">
+          <img src="assets/img/scenes/caustic.jpg" width="1200" height="750" loading="lazy" decoding="async"
+               alt="The Caustics scene rendered in Akari">
+        </div>
+        <figcaption class="meta">
+          <h4>Caustics</h4>
+          <p>Glass bending light onto the floor, which is harder than it sounds.</p>
+          <code>make run USD_SCENE=Scenes/CausticShowcase.usda</code>
+        </figcaption>
+      </figure>
+      <figure class="scene rv" data-delay="0.08" style="--h1:250;--h2:310">
+        <div class="thumb">
+          <img src="assets/img/scenes/reflection.jpg" width="1200" height="750" loading="lazy" decoding="async"
+               alt="The Reflections scene rendered in Akari">
+        </div>
+        <figcaption class="meta">
+          <h4>Reflections</h4>
+          <p>Screen space reflections off a wet floor, chrome and gold.</p>
+          <code>make run USD_SCENE=Scenes/ReflectionShowcase.usda</code>
+        </figcaption>
+      </figure>
+      <figure class="scene rv" data-delay="0.00" style="--h1:214;--h2:276;--lift:1.32;--grade-contrast:1.04">
+        <div class="thumb">
+          <img src="assets/img/scenes/cloud.jpg" width="1200" height="750" loading="lazy" decoding="async"
+               alt="The Clouds scene rendered in Akari">
+        </div>
+        <figcaption class="meta">
+          <h4>Clouds</h4>
+          <p>A sky of participating media, marched in froxels.</p>
+          <code>make run USD_SCENE=Scenes/CloudShowcase.usda</code>
+        </figcaption>
+      </figure>
+      <figure class="scene rv" data-delay="0.04" style="--h1:330;--h2:238;--lift:1.42;--grade-contrast:1.0">
+        <div class="thumb">
+          <img src="assets/img/scenes/probe.jpg" width="1200" height="750" loading="lazy" decoding="async"
+               alt="The Light Probes scene rendered in Akari">
+        </div>
+        <figcaption class="meta">
+          <h4>Light Probes</h4>
+          <p>Two colored probes doing the indirect work in a closed room.</p>
+          <code>make run USD_SCENE=Scenes/ProbeShowcase.usda</code>
+        </figcaption>
+      </figure>
+      <figure class="scene rv" data-delay="0.08" style="--h1:268;--h2:212">
+        <div class="thumb">
+          <img src="assets/img/scenes/arealight.jpg" width="1200" height="750" loading="lazy" decoding="async"
+               alt="The Area Lights scene rendered in Akari">
+        </div>
+        <figcaption class="meta">
+          <h4>Area Lights</h4>
+          <p>Rect, disk and cylinder lights. Soft shadows that actually soften with distance.</p>
+          <code>make run USD_SCENE=Scenes/AreaLightShowcase.usda</code>
+        </figcaption>
+      </figure>
+      <figure class="scene rv" data-delay="0.00" style="--h1:300;--h2:230">
+        <div class="thumb">
+          <img src="assets/img/scenes/lens.jpg" width="1200" height="750" loading="lazy" decoding="async"
+               alt="The Lens Showcase scene rendered in Akari">
+        </div>
+        <figcaption class="meta">
+          <h4>Lens Showcase</h4>
+          <p>Depth of field and bokeh, off the physical camera. Four lenses, one stage.</p>
+          <code>make run USD_SCENE=Scenes/LensShowcase.usda</code>
+        </figcaption>
+      </figure>
+      <figure class="scene rv" data-delay="0.04" style="--h1:328;--h2:222">
+        <div class="thumb">
+          <img src="assets/img/scenes/motionblur.jpg" width="1200" height="750" loading="lazy" decoding="async"
+               alt="The Motion Blur scene rendered in Akari">
+        </div>
+        <figcaption class="meta">
+          <h4>Motion Blur</h4>
+          <p>A blade at 720 degrees a second, smeared across a 180 degree shutter.</p>
+          <code>make run USD_SCENE=Scenes/MotionBlurShowcase.usda</code>
+        </figcaption>
+      </figure>
+    </div>
+
+    <p class="hero-note rv" style="margin-top:20px">
+      Seven more sit in <code>Scenes/</code>, including sculpting, the modifier stack and the physical
+      atmosphere.
+    </p>
+  </div>
+</section>
+
+<!-- ───────────────────────── open source ───────────────────────── -->
+<section>
+  <div class="wrap">
+    <div class="cta rv">
+      <h2>All of it. BSD 3-Clause.</h2>
+      <p>
+        The engine, the app, the scenes, the shaders. No community edition, no pro tier, no part of
+        it held back.
+      </p>
+      <div class="hero-actions">
+        <a class="btn primary" href="https://github.com/wabiverse/Akari">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.69-.22.69-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg>
+          wabiverse/Akari
+        </a>
+        <a class="btn" href="credits.html">Third-party credits</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-mark">
+          <svg class="orca" viewBox="0.17 0.19 32.95 49.61" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="m4.87,33.98S1.37,31.13.3,24.1c-.31-2.73.01-5.38,1.02-7.94,1.15-2.93,2.99-5.33,5.51-7.22.5-.38,1.05-.69,1.46-1.18.6-.71.79-1.52.68-2.42-.09-.68-.33-1.3-.59-1.92-.16-.39-.34-.77-.39-1.19-.1-.79.33-1.48,1.07-1.77.78-.31,1.59-.3,2.4-.17,1.26.21,2.48.59,3.67,1.04,2.19.81,4.27,1.85,6.25,3.09,2.3,1.44,4.41,3.11,6.27,5.1,1.34,1.44,2.51,3,3.44,4.73,1.81,3.37,2.41,6.95,1.76,10.73-.23,1.32-.62,2.58-1.3,3.74-1.22,2.09-3.05,3.12-5.46,3.16-1.32.02-2.55-.3-3.75-.81-1.13-.48-2.21-1.05-3.26-1.67-1.17-.69-9.85-6.99-12.05-7.47-1.8.32-3.36.8-4.12,2.47-3.46,3.39,1.97,9.55,1.97,9.55h0Zm17.95-8.31c0-.82-.98-1.62-1.82-1.49-.66.11-.99.67-.76,1.3.23.63.88,1.1,1.55,1.11.59.01,1.03-.38,1.03-.92h0Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="m21.49,33.4c.27-.15-7.4,8.63-16.65.59-2.3-2-6.77-12.09.52-12.29,4.64-.13,11.83,6.48,11.83,6.48-2.9-1.96-8.72-5.94-12.24-2.8-4.78,4.27,2.44,15.66,16.53,8.02h0Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="m14.91,35.81c1.07-.31,2.07-.81,3.09-1.24,1.07-.46,2.15-.9,3.3-1.14.71-.15,1.49-.14,1.99.01-.56.82-1.03,1.68-1.56,2.52-.21.34-.46.66-.73.95-1.19,1.26-2.65,1.79-4.28,1.81-.41,0-.83,0-1.32,0,.73.15,1.38.31,2.01.55,1.59.6,2.53,1.76,2.92,3.38.42,1.77.69,3.57,1.15,5.34.14.55.27,1.1.46,1.63.05.13.05.18-.12.16-1.76-.24-3.47-.66-5.02-1.56-1.39-.8-2.48-1.92-3.33-3.28-.8-1.27-1.36-2.65-1.97-4.01-.32-.71-.53-1.29-.95-1.92-.45-.68-1.06-1.25-1.75-1.7-2.84-1.82-4.47-3.89-4.52-3.94,0,0,2.96,3.58,8.5,3.04.73-.15,1.46-.3,2.15-.6h0Z" fill="currentColor" stroke-width="0"/><path fill-rule="evenodd" clip-rule="evenodd" opacity=".4" d="m22.82,25.67c0,.54-.44.93-1.03.92-.67-.01-1.32-.48-1.55-1.11s.1-1.19.76-1.3c.84-.14,1.83.67,1.82,1.49h0Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" opacity=".28" d="m30.62,9.58s-.06-.02-.06-.06v-1.16s.02-.06.06-.06h.6c.27,0,.35.12.35.3v.08c0,.1-.03.17-.1.2.13.01.22.11.22.26v.38s-.02.06-.06.06h-.28s-.06-.02-.06-.06v-.27c0-.05-.02-.08-.07-.08h-.25v.35s-.02.06-.06.06h-.28Zm.34-.74h.13c.06,0,.08-.04.08-.08v-.06s-.02-.08-.08-.08h-.13v.23Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" opacity=".28" d="m31.12,10.36c-.78,0-1.42-.64-1.42-1.42s.64-1.42,1.42-1.42,1.42.64,1.42,1.42-.64,1.42-1.42,1.42Zm0-2.51c-.6,0-1.09.49-1.09,1.09s.49,1.09,1.09,1.09,1.09-.49,1.09-1.09-.49-1.09-1.09-1.09Z" fill="currentColor"/></svg>
+          <strong>Wabi Foundation</strong>
+        </div>
+        <p>Akari (灯り) means light. The name is most of the pitch.</p>
+      </div>
+      <div>
+        <h5>Project</h5>
+        <a href="akari.html">Rendering</a>
+        <a href="kraken.html">Workspace</a>
+        <a href="#quickstart">Quickstart</a>
+        <a href="#scenes">Scenes</a>
+      </div>
+      <div>
+        <h5>Source</h5>
+        <a href="https://github.com/wabiverse/Akari">Repository</a>
+        <a href="https://github.com/wabiverse/Akari/releases">Releases</a>
+        <a href="https://github.com/wabiverse/Akari/issues">Issues</a>
+        <a href="credits.html">Credits &amp; licenses</a>
+      </div>
+      <div>
+        <h5>Upstream</h5>
+        <a href="https://openusd.org">OpenUSD</a>
+        <a href="https://codeberg.org/meshula/LabGL">LabGL / LabFX</a>
+        <a href="https://swift.org">Swift</a>
+        <a href="https://vimeo.com/1241690263">Demo reel</a>
+      </div>
+    </div>
+    <div class="foot-base">
+      <span>© <span data-year>2026</span> Wabi Foundation · BSD 3-Clause</span>
+      <span>Built with OpenUSD, Hydra, LabFX and Swift</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>

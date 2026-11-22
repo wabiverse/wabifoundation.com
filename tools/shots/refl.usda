@@ -1,0 +1,18 @@
+#usda 1.0
+(
+    subLayers = [ @../../../Akari/Scenes/ReflectionShowcase.usda@ ]
+)
+
+over "World"
+{
+    def Camera "WebCam"
+    {
+        float focalLength = 35
+        float horizontalAperture = 36
+        float verticalAperture = 22.5
+        float2 clippingRange = (0.1, 1000)
+        double3 xformOp:translate = (0.2, 3.6, 12.5)
+        float3 xformOp:rotateXYZ = (-8, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]
+    }
+}

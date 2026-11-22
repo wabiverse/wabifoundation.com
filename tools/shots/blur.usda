@@ -1,0 +1,20 @@
+#usda 1.0
+(
+    subLayers = [ @../../../Akari/Scenes/MotionBlurShowcase.usda@ ]
+)
+
+over "World"
+{
+    def Camera "WebCam"
+    {
+        float focalLength = 32
+        float horizontalAperture = 36
+        float verticalAperture = 22.5
+        float2 clippingRange = (0.1, 1000)
+        double shutter:open = -0.25
+        double shutter:close = 0.25
+        double3 xformOp:translate = (-0.4, 1.5, 4.8)
+        float3 xformOp:rotateXYZ = (-7, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]
+    }
+}

@@ -1,0 +1,29 @@
+#usda 1.0
+(
+    subLayers = [ @../../../Akari/Scenes/ProbeShowcase.usda@ ]
+)
+
+over "World"
+{
+    # a 28mm from just inside the opening. shooting the room from outside only ever
+    # shows the back wall, and a wide lens out there catches the box's exterior as
+    # grey bands, so the camera sits inside and the side walls do the perspective.
+    def Camera "WebCam"
+    {
+        float focalLength = 28
+        float horizontalAperture = 36
+        float verticalAperture = 20.25
+        float2 clippingRange = (0.05, 500)
+        double3 xformOp:translate = (0, 2, 3.6)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+    }
+
+    over "BevelCube"
+    {
+        # the cube ships as a faceted triangle soup, which shows at this size
+        over "Mesh"
+        {
+            uniform token subdivisionScheme = "catmullClark"
+        }
+    }
+}
