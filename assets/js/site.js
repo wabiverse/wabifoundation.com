@@ -269,6 +269,85 @@
     var timer = setInterval(tick, 1000);
   });
 
+  /* ---------- looping motion ---------- */
+
+  // safari on macos stops drawing gpu animations while the page scrolls, and it
+  // leaves the clipped part of a css animated element unpainted when that part
+  // slides into view, so the loops are stepped here with a style write per frame
+
+  if (!reduced) buildLoops();
+
+  function buildLoops() {
+    var track = document.querySelector(".strip .track");
+    var blobs = Array.prototype.slice.call(document.querySelectorAll(".aurora i"));
+    var scan = document.querySelector(".viewport .scanline");
+    var plats = Array.prototype.slice.call(document.querySelectorAll(".plat.soon"));
+    if (!track && !blobs.length && !scan && !plats.length) return;
+
+    // the same curve as css ease-in-out
+    function easeInOut(x) {
+      var lo = 0, hi = 1;
+      for (var n = 0; n < 24; n++) {
+        var t = (lo + hi) / 2;
+        var bx = 3 * (1 - t) * (1 - t) * t * 0.42 + 3 * (1 - t) * t * t * 0.58 + t * t * t;
+        if (bx < x) lo = t; else hi = t;
+      }
+      var u = (lo + hi) / 2;
+      return 3 * (1 - u) * u * u + u * u * u;
+    }
+
+    // one loop is the distance from the first label to its repeat, so the
+    // wrap lands exactly on the same pixel
+    var period = 0;
+    function measure() {
+      if (!track) return;
+      var spans = track.children;
+      var half = spans.length / 2;
+      period = half >= 1 ? spans[half].offsetLeft - spans[0].offsetLeft : track.scrollWidth / 2;
+    }
+    measure();
+    if (track) {
+      if (typeof ResizeObserver === "function") new ResizeObserver(measure).observe(track);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+    }
+
+    // the blobs keep the offsets their css delays gave them
+    var blobDelay = [0, 9, 17];
+
+    root.classList.add("js-motion");
+    var t0 = performance.now();
+
+    function step(now) {
+      var s = (now - t0) / 1000;
+
+      if (track && period > 0) {
+        track.style.transform = "translateX(" + (-((s / 46) * period) % period) + "px)";
+      }
+
+      blobs.forEach(function (el, n) {
+        var local = s + (blobDelay[n] || 0);
+        var iter = Math.floor(local / 26);
+        var p = (local % 26) / 26;
+        if (iter % 2) p = 1 - p;
+        var e = easeInOut(p);
+        el.style.transform = "translate3d(" + 5 * e + "vw, " + 7 * e + "vh, 0) scale(" + (1 + 0.15 * e) + ")";
+      });
+
+      if (scan) {
+        scan.style.transform = "translateY(" + (-120 + 680 * ((s % 7) / 7)) + "px)";
+      }
+
+      if (plats.length) {
+        var q = (s % 5.5) / 5.5;
+        var x = q < 0.62 ? -100 : -100 + 200 * easeInOut((q - 0.62) / 0.38);
+        plats.forEach(function (el) { el.style.setProperty("--shimmer-x", x + "%"); });
+      }
+
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
   /* ---------- hero viewport: rotating wireframe ---------- */
 
   var hero = document.querySelector("[data-viewport]");

@@ -1,15 +1,15 @@
 /* wabi foundation — akari & kraken */
 
 /* safari on macos holds back gpu run transform and opacity animations while the
-   page scrolls, so every looping animation here moves a registered property
-   instead, which the browser has to resolve each frame and keeps drawing */
-@property --drift-x { syntax: "<length>"; inherits: false; initial-value: 0px; }
-@property --drift-y { syntax: "<length>"; inherits: false; initial-value: 0px; }
-@property --drift-s { syntax: "<number>"; inherits: false; initial-value: 1; }
-@property --scan-y { syntax: "<length>"; inherits: false; initial-value: 0px; }
-@property --slide-x { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
-@property --shimmer-x { syntax: "<percentage>"; inherits: false; initial-value: -100%; }
+   page scrolls. the looping ones are stepped from site.js once it adds .js-motion
+   to the root, and the css keyframes below stay as the fallback without script */
 @property --flip { syntax: "<number>"; inherits: false; initial-value: 1; }
+
+html.js-motion .aurora i,
+html.js-motion .viewport .scanline,
+html.js-motion .strip .track,
+html.js-motion .plat.soon::after { animation: none; }
+html.js-motion .plat.soon::after { transform: translateX(var(--shimmer-x, -100%)); }
 
 :root {
   --pink: #d6268c;
@@ -111,7 +111,6 @@ html[data-theme="light"] .aurora { opacity: 0.3; }
   display: block;
   border-radius: 50%;
   mix-blend-mode: screen;
-  transform: translate3d(var(--drift-x), var(--drift-y), 0) scale(var(--drift-s));
   animation: drift 26s ease-in-out infinite alternate;
 }
 
@@ -122,8 +121,8 @@ html[data-theme="light"] .aurora i { mix-blend-mode: multiply; }
 .aurora i:nth-child(3) { width: 38vw; height: 38vw; left: 28vw; top: 32vh; background: radial-gradient(circle, rgba(123,63,228,0.42), transparent 70%); animation-delay: -17s; }
 
 @keyframes drift {
-  from { --drift-x: 0vw; --drift-y: 0vh; --drift-s: 1; }
-  to   { --drift-x: 5vw; --drift-y: 7vh; --drift-s: 1.15; }
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(5vw, 7vh, 0) scale(1.15); }
 }
 
 .grid-veil {
@@ -375,14 +374,13 @@ html:not([data-theme="light"]) .icon-btn .sun { display: none; }
   position: absolute;
   left: 0; right: 0; height: 110px;
   background: linear-gradient(to bottom, transparent, rgba(123,63,228,0.085), transparent);
-  transform: translateY(var(--scan-y));
   animation: scan 7s linear infinite;
   pointer-events: none;
 }
 
 @keyframes scan {
-  from { --scan-y: -120px; }
-  to   { --scan-y: 560px; }
+  from { transform: translateY(-120px); }
+  to   { transform: translateY(560px); }
 }
 
 /* ---------- marquee strip ---------- */
@@ -399,7 +397,6 @@ html:not([data-theme="light"]) .icon-btn .sun { display: none; }
   display: flex;
   gap: 42px;
   width: max-content;
-  transform: translateX(var(--slide-x));
   animation: slide 46s linear infinite;
   font-family: var(--mono);
   font-size: 12px;
@@ -413,8 +410,8 @@ html:not([data-theme="light"]) .icon-btn .sun { display: none; }
 .strip .track span::after { content: "◆"; font-size: 7px; color: var(--pink); opacity: 0.7; }
 
 @keyframes slide {
-  from { --slide-x: 0%; }
-  to   { --slide-x: -50%; }
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
 /* ---------- sections ---------- */
@@ -688,14 +685,14 @@ section.tight { padding: 64px 0; }
   position: absolute;
   inset: 0;
   background: linear-gradient(110deg, transparent 32%, rgba(255,255,255,0.055) 48%, transparent 62%);
-  transform: translateX(var(--shimmer-x));
+  transform: translateX(-100%);
   animation: shimmer 5.5s ease-in-out infinite;
   pointer-events: none;
 }
 
 @keyframes shimmer {
-  0%, 62% { --shimmer-x: -100%; }
-  100%    { --shimmer-x: 100%; }
+  0%, 62% { transform: translateX(-100%); }
+  100%    { transform: translateX(100%); }
 }
 
 /* ---------- countdown ---------- */
