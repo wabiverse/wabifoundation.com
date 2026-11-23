@@ -32,22 +32,98 @@
     window.addEventListener("scroll", onScroll, { passive: true });
   }
 
+  /* ---------- easing ---------- */
+
+  // the same curves as css cubic-bezier timing functions
+  function bezier(x1, y1, x2, y2) {
+    function at(a, b, t) { return 3 * (1 - t) * (1 - t) * t * a + 3 * (1 - t) * t * t * b + t * t * t; }
+    return function (x) {
+      if (x <= 0) return 0;
+      if (x >= 1) return 1;
+      var lo = 0, hi = 1;
+      for (var n = 0; n < 24; n++) {
+        var t = (lo + hi) / 2;
+        if (at(x1, x2, t) < x) lo = t; else hi = t;
+      }
+      return at(y1, y2, (lo + hi) / 2);
+    };
+  }
+  var easeInOut = bezier(0.42, 0, 0.58, 1);
+  var easeOutSoft = bezier(0.2, 0.8, 0.3, 1);
+
   /* ---------- scroll reveal ---------- */
 
-  var revealables = document.querySelectorAll(".rv");
-  if (revealables.length && "IntersectionObserver" in window) {
+  // safari on macos holds back the css opacity and transform transition until a
+  // scroll ends, so the fade is stepped here and the class only lands at the end.
+  // it starts as soon as the top edge is on screen, however tall the block is,
+  // and anything already scrolled past shows at once
+
+  var revealables = Array.prototype.slice.call(document.querySelectorAll(".rv"));
+  if (revealables.length && "IntersectionObserver" in window && !reduced) {
+    var pending = revealables.filter(function (el) { return !el.classList.contains("in"); });
+
+    var settle = function (el, now) {
+      var i = pending.indexOf(el);
+      if (i < 0) return;
+      pending.splice(i, 1);
+      io.unobserve(el);
+      if (now) el.classList.add("in");
+      else reveal(el, parseFloat(el.getAttribute("data-delay") || "0"));
+    };
+
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
-        if (!en.isIntersecting) return;
-        var el = en.target;
-        var delay = parseFloat(el.getAttribute("data-delay") || "0");
-        setTimeout(function () { el.classList.add("in"); }, delay * 1000);
-        io.unobserve(el);
+        if (en.isIntersecting) settle(en.target, false);
+        else if (en.boundingClientRect.bottom <= 0) settle(en.target, true);
       });
-    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
-    revealables.forEach(function (el) { io.observe(el); });
+    }, { rootMargin: "0px 0px -4% 0px", threshold: 0 });
+    pending.forEach(function (el) { io.observe(el); });
+
+    // a restored or jumped scroll position can carry a block from below the
+    // screen to above it without it ever intersecting, so sweep what is left
+    var sweeping = false;
+    var sweep = function () {
+      sweeping = false;
+      var line = window.innerHeight * 0.96;
+      pending.slice().forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.bottom <= 0) settle(el, true);
+        else if (r.top < line) settle(el, false);
+      });
+      if (!pending.length) window.removeEventListener("scroll", onSweep);
+    };
+    var onSweep = function () {
+      if (sweeping) return;
+      sweeping = true;
+      requestAnimationFrame(sweep);
+    };
+    window.addEventListener("scroll", onSweep, { passive: true });
+    window.addEventListener("load", onSweep);
+    window.addEventListener("pageshow", onSweep);
   } else {
     revealables.forEach(function (el) { el.classList.add("in"); });
+  }
+
+  function reveal(el, delay) {
+    var DUR = 700;
+    el.style.transition = "none";
+    var t0 = performance.now() + delay * 1000;
+    function step(now) {
+      var p = (now - t0) / DUR;
+      if (p < 1) {
+        var e = easeOutSoft(Math.max(0, p));
+        el.style.opacity = e;
+        el.style.transform = "translateY(" + 16 * (1 - e) + "px)";
+        requestAnimationFrame(step);
+        return;
+      }
+      // the class holds the same end values, so dropping the inline ones is seamless
+      el.classList.add("in");
+      el.style.opacity = "";
+      el.style.transform = "";
+      el.style.transition = "";
+    }
+    requestAnimationFrame(step);
   }
 
   /* ---------- card pointer glow ---------- */
@@ -283,18 +359,6 @@
     var scan = document.querySelector(".viewport .scanline");
     var plats = Array.prototype.slice.call(document.querySelectorAll(".plat.soon"));
     if (!track && !blobs.length && !scan && !plats.length) return;
-
-    // the same curve as css ease-in-out
-    function easeInOut(x) {
-      var lo = 0, hi = 1;
-      for (var n = 0; n < 24; n++) {
-        var t = (lo + hi) / 2;
-        var bx = 3 * (1 - t) * (1 - t) * t * 0.42 + 3 * (1 - t) * t * t * 0.58 + t * t * t;
-        if (bx < x) lo = t; else hi = t;
-      }
-      var u = (lo + hi) / 2;
-      return 3 * (1 - u) * u * u + u * u * u;
-    }
 
     // one loop is the distance from the first label to its repeat, so the
     // wrap lands exactly on the same pixel
