@@ -51,7 +51,7 @@
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow rv in"><span class="dot"></span> v0.0.7 · macOS build available</span>
+      <span class="eyebrow rv in"><span class="dot"></span> v0.0.8 · Mac, iPad and iPhone</span>
       <h1 class="rv in">
         A realtime<br>
         <span class="grad-text">OpenUSD</span> engine.
@@ -60,7 +60,7 @@
         USD at the speed of light.
       </p>
       <div class="hero-actions rv" data-delay="0.16">
-        <a class="btn primary" href="https://github.com/wabiverse/Akari/releases/latest">
+        <a class="btn primary" href="release-0.0.8.html#download">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></svg>
           Download
         </a>
@@ -314,21 +314,17 @@
       </div>
     </div>
 
-    <!--
-      Release countdown for the next macOS and iOS build.
-      Change the target instant below (ISO 8601, UTC) and the clock follows it.
-      When it passes, the clock swaps itself for a "shipped" badge.
-    -->
     <div class="countdown rv" style="margin-top:28px">
       <div>
-        <h3>Next release · macOS and iOS</h3>
+        <h3>v0.0.8 · macOS and iOS</h3>
         <p>
-          v0.0.7 is the build you can download today. v0.0.8 is finished and sitting here, shipping
-          for Mac, iPad and iPhone at once the moment Apple provisions a profile &mdash; the one pass
-          we can&rsquo;t optimize. Windows and Linux are coming, with no date we&rsquo;re willing to make up.
+          Version 0.0.8 is available for Mac, iPad and iPhone. The Mac build is notarized, and the
+          iPhone and iPad builds are distributed through TestFlight. Windows and Linux support is in progress.
         </p>
       </div>
-      <div class="clock" data-countdown="2026-11-27T00:00:00Z" aria-label="Time until the next release"></div>
+      <div class="hero-actions">
+        <a class="btn primary" href="release-0.0.8.html">Release notes</a>
+      </div>
     </div>
   </div>
 </section>
@@ -349,7 +345,7 @@
       <div class="step">
         <div class="n">Install</div>
         <h4>Drag it in</h4>
-        <p>Mount the <code>.dmg</code>, drop the app in. It&rsquo;s self-signed, so macOS will clutch its pearls exactly once: <strong>System Settings → Privacy &amp; Security</strong> → <strong>Open Anyway</strong>.</p>
+        <p>Mount the <code>.dmg</code> and drag the app to Applications. The app is notarized, so macOS opens it without a warning. On iPhone and iPad, install it through <a class="grad-text" href="https://testflight.apple.com/join/TESTFLIGHT_CODE">TestFlight</a>.</p>
       </div>
       <div class="step">
         <div class="n">Open</div>
@@ -550,6 +546,7 @@ make run <span class="c-arg">PLATFORM</span>=iOS <span class="c-arg">DEVICE_ID</
         <a href="https://github.com/wabiverse/Akari/releases">Releases</a>
         <a href="https://github.com/wabiverse/Akari/issues">Issues</a>
         <a href="credits.html">Credits &amp; licenses</a>
+        <a href="privacy.html">Privacy</a>
       </div>
       <div>
         <h5>Upstream</h5>
